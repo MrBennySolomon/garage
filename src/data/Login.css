@@ -1,0 +1,94 @@
+/*
+  עיצוב מסך כניסה (login) משותף.
+  מבוסס על מסך הכניסה שבקובץ Admin.jsx.
+  ייבאו את הקובץ הזה בכל רכיב שמציג מסך סיסמה, כדי לשמור על עיצוב אחיד:
+
+    import "./Login.css";
+*/
+
+.login-screen {
+  --panel: #ffffff;
+  --ink: #16202c;
+  --muted: #64748b;
+  --line: #e3e7ed;
+
+  display: grid;
+  place-items: center;
+  min-height: 100vh;
+  padding: 20px;
+  background: #f5f6f8;
+  font-family: inherit;
+  color: var(--ink);
+}
+
+.login-card {
+  width: 100%;
+  max-width: 340px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 28px 24px;
+  text-align: center;
+  box-shadow: 0 10px 30px rgba(20, 30, 45, 0.06);
+}
+
+.login-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  margin: 0 auto 14px;
+  display: grid;
+  place-items: center;
+  background: #eef1f5;
+  color: #334155;
+}
+
+.login-card h1 {
+  font-size: 1.25rem;
+  margin: 0 0 4px;
+}
+
+.login-card p {
+  margin: 0 0 18px;
+  color: var(--muted);
+}
+
+.login-card input {
+  width: 100%;
+  font: inherit;
+  padding: 11px 13px;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  text-align: center;
+  margin-bottom: 12px;
+  background: #fbfcfd;
+  color: var(--ink);
+  box-sizing: border-box;
+}
+
+.login-card input:focus-visible {
+  outline: 2px solid #2f6fd0;
+  outline-offset: 1px;
+}
+
+.login-error {
+  color: #b3202c;
+  font-size: 0.85rem;
+  margin-bottom: 12px;
+}
+
+.btn-primary1 {
+  width: 100%;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 11px 14px;
+  border-radius: 10px;
+  border: none;
+  background: #16202c;
+  color: #fff;
+}
+
+.btn-primary1:hover {
+  background: #223042;
+}
