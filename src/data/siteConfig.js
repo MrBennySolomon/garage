@@ -7,11 +7,11 @@ import gar2 from "../img/garage2.jpg";
 
 const siteConfig = {
   brand: {
-    name: "חזי שירותי רכב",
+    name: "בני שירותי רכב",
     tagline: "מכונאות חשמל דיאגנוסטיקה",
-    phone: "053-888-0211", // כפי שמוצג באתר
-    phoneHref: "0538880211", // ספרות בלבד, לקישורי חיוג
-    email: "hezihayu@gmail.com"
+    phone: "050-111-1234", // כפי שמוצג באתר
+    phoneHref: "0501111234", // ספרות בלבד, לקישורי חיוג
+    email: "gmail@gmail.com"
   },
 
   nav: [
