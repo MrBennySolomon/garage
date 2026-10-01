@@ -178,7 +178,7 @@ export default function SiteConfigEditor() {
             <Lock size={20} />
           </div>
 
-          <h3>כניסה לעריכה</h3>
+          <h3>כניסה לעריכת האתר</h3>
 
           {/* <input
             type="password"

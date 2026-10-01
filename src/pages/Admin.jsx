@@ -199,7 +199,7 @@ export default function Admin() {
             <Lock size={20} />
           </div>
 
-          <h3>כניסה לניהול</h3>
+          <h3>כניסה לניהול פניות</h3>
 
           {/* <input
             type="password"
