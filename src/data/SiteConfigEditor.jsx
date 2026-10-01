@@ -3,71 +3,12 @@ import { Lock } from "lucide-react";
 import "./Login.css";
 import "./SiteConfigEditor.css";
 import siteConfig from "./siteConfig";
-import gar from "../img/garage.jpg";
-import gar2 from "../img/garage2.jpg";
 
 // סיסמת הכניסה לעריכת תוכן האתר – מומלץ להחליף לפני שימוש בפועל
 const EDITOR_PASSWORD = "";
 const SESSION_KEY = "site-config-editor-authed";
 
-// כתובת הפונקציה שמעלה את הקובץ ל-GitHub (Netlify Function)
-const PUBLISH_URL = "/.netlify/functions/save-config";
-const PUBLISH_SECRET_KEY = "site-config-publish-secret";
-const MAX_PAYLOAD_CHARS = 5_000_000; // מגבלת Netlify Functions היא כ-6MB
-
 const clone = (value) => JSON.parse(JSON.stringify(value));
-
-// תמונות מקומיות שמיובאות בקובץ siteConfig.js. בזמן ריצה הן הופכות לכתובת (למשל
-// /assets/garage-abc123.jpg), ולכן בשמירה מחזירים אותן לשם המשתנה המקורי -
-// אחרת הכתובת עם ה-hash תישבר אחרי ה-build הבא.
-const LOCAL_IMAGES = { gar, gar2 };
-
-function serializeConfig(config) {
-  const byUrl = new Map(Object.entries(LOCAL_IMAGES).map(([name, url]) => [url, name]));
-
-  const json = JSON.stringify(
-    config,
-    (_key, value) =>
-      typeof value === "string" && byUrl.has(value) ? `@@IMG:${byUrl.get(value)}@@` : value,
-    2
-  ).replace(/"@@IMG:(\w+)@@"/g, "$1");
-
-  return `// כל התוכן של האתר - טקסטים, צבעים, תמונות ופרטי קשר - נמצא כאן במקום אחד.
-// הקובץ נשמר אוטומטית ממסך "עריכת האתר".
-
-import gar from "../img/garage.jpg";
-import gar2 from "../img/garage2.jpg";
-
-const siteConfig = ${json};
-
-export default siteConfig;
-`;
-}
-
-// מקטין תמונה לפני שהיא נכנסת לקובץ, כדי שהקובץ לא יתפח (ושלא נחרוג ממגבלת הגודל)
-function readAndCompressImage(file, maxSize = 1400, quality = 0.82) {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onerror = reject;
-    reader.onload = () => {
-      const img = new Image();
-      img.onerror = reject;
-      img.onload = () => {
-        const scale = Math.min(1, maxSize / Math.max(img.width, img.height));
-        const canvas = document.createElement("canvas");
-        canvas.width = Math.round(img.width * scale);
-        canvas.height = Math.round(img.height * scale);
-        const ctx = canvas.getContext("2d");
-        ctx.fillStyle = "#fff";
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-        resolve(canvas.toDataURL("image/jpeg", quality));
-      };
-      img.src = reader.result;
-    };
-    reader.readAsDataURL(file);
-  });
-}
 
 const emptyService = () => ({
   icon: "wrench",
@@ -100,16 +41,6 @@ export default function SiteConfigEditor() {
   const [config, setConfig] = useState(() => clone(siteConfig));
   const [tab, setTab] = useState("brand");
   const [message, setMessage] = useState("");
-
-  const [publishSecret, setPublishSecret] = useState(() => {
-    try {
-      return sessionStorage.getItem(PUBLISH_SECRET_KEY) || "";
-    } catch {
-      return "";
-    }
-  });
-  const [publishing, setPublishing] = useState(false);
-  const [publishStatus, setPublishStatus] = useState(null); // { type: "success" | "error", text }
 
   function handleLogin(e) {
     e.preventDefault();
@@ -186,74 +117,11 @@ export default function SiteConfigEditor() {
     });
   };
 
-  const configText = useMemo(() => serializeConfig(config), [config]);
-
-  // שמירה ל-GitHub דרך Netlify Function. ה-commit מפעיל build אוטומטי ב-Netlify.
-  const publishConfig = async () => {
-    const secret = publishSecret.trim();
-
-    if (!secret) {
-      setPublishStatus({ type: "error", text: "הזן סיסמת פרסום" });
-      return;
-    }
-
-    if (configText.length > MAX_PAYLOAD_CHARS) {
-      setPublishStatus({
-        type: "error",
-        text: "הקובץ גדול מדי לשמירה. הסר תמונות כבדות מהגלריה ונסה שוב."
-      });
-      return;
-    }
-
-    setPublishing(true);
-    setPublishStatus(null);
-
-    try {
-      const res = await fetch(PUBLISH_URL, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "x-editor-secret": secret
-        },
-        body: JSON.stringify({ content: configText })
-      });
-
-      let data = {};
-      try {
-        data = await res.json();
-      } catch {
-        // תגובה שאינה JSON
-      }
-
-      if (!res.ok) {
-        throw new Error(
-          data.error ||
-            (res.status === 401
-              ? "סיסמת פרסום שגויה"
-              : res.status === 404
-                ? "פונקציית השמירה לא נמצאה (האם האתר רץ על Netlify?)"
-                : "השמירה נכשלה")
-        );
-      }
-
-      try {
-        sessionStorage.setItem(PUBLISH_SECRET_KEY, secret);
-      } catch {
-        // ignore
-      }
-
-      setPublishStatus({
-        type: "success",
-        text: data.unchanged
-          ? "אין שינויים לשמירה - הקובץ זהה לגרסה שבאתר."
-          : "השינויים נשמרו ✓ האתר מתעדכן עכשיו, זה לוקח כדקה-שתיים."
-      });
-    } catch (err) {
-      setPublishStatus({ type: "error", text: err.message || "השמירה נכשלה" });
-    } finally {
-      setPublishing(false);
-    }
-  };
+  const configText = useMemo(
+    () =>
+      `const siteConfig = ${JSON.stringify(config, null, 2)};\n\nexport default siteConfig;\n`,
+    [config]
+  );
 
   const copyConfig = async () => {
     await navigator.clipboard.writeText(configText);
@@ -275,13 +143,13 @@ export default function SiteConfigEditor() {
 
   const handleImageUpload = (index, file) => {
     if (!file) return;
-    readAndCompressImage(file)
-      .then((dataUrl) => {
-        const images = [...(config.gallery?.images || [])];
-        images[index] = dataUrl;
-        update(["gallery", "images"], images);
-      })
-      .catch(() => setMessage("לא ניתן לקרוא את התמונה"));
+    const reader = new FileReader();
+    reader.onload = () => {
+      const images = [...(config.gallery?.images || [])];
+      images[index] = reader.result;
+      update(["gallery", "images"], images);
+    };
+    reader.readAsDataURL(file);
   };
 
   const reset = () => {
@@ -339,17 +207,6 @@ export default function SiteConfigEditor() {
           <p>ערוך את הטקסטים, הצבעים, התמונות ופרטי העסק במקום אחד.</p>
         </div>
         <div className="header-actions">
-          <input
-            type="password"
-            value={publishSecret}
-            onChange={(e) => setPublishSecret(e.target.value)}
-            placeholder="סיסמת פרסום"
-            autoComplete="off"
-            style={{ padding: "8px 10px", borderRadius: 8, border: "1px solid #c5d0cc" }}
-          />
-          <button className="btn primary" onClick={publishConfig} disabled={publishing}>
-            {publishing ? "שומר..." : "💾 שמור שינויים"}
-          </button>
           <button className="btn secondary" onClick={reset}>
             איפוס
           </button>
@@ -361,16 +218,6 @@ export default function SiteConfigEditor() {
           </button>
         </div>
       </header>
-
-      {publishStatus && (
-        <div
-          className={publishStatus.type === "success" ? "success" : "error"}
-          role="status"
-          style={{ margin: "0 0 12px" }}
-        >
-          {publishStatus.text}
-        </div>
-      )}
 
       <div className="editor-layout">
         <aside className="sidebar">

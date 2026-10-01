@@ -66,7 +66,7 @@ export default async (req) => {
   ) {
     return json(400, { error: "תוכן הקובץ אינו תקין" });
   }
-
+  // const url = "https://garage-react.netlify.app/.netlify/functions/save-config";
   const url = `https://api.github.com/repos/${GITHUB_REPO}/contents/${CONFIG_PATH}`;
   const headers = {
     Authorization: `Bearer ${GITHUB_TOKEN}`,
