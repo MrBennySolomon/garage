@@ -75,7 +75,7 @@ const styles = {
 
 /* ---------- טופס הרשמה / התחברות ---------- */
 function AuthForm({ mode, onSuccess, onSwitch }) {
-  const isRegister = mode === "register";
+  const isRegister = false;
   const [form, setForm] = useState({ name: "", email: "", password: "" });
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -129,9 +129,9 @@ function AuthForm({ mode, onSuccess, onSwitch }) {
       </button>
 
       <div style={styles.switchRow}>
-        {isRegister ? "כבר יש לך חשבון? " : "אין לך חשבון? "}
+        {/* {isRegister ? "כבר יש לך חשבון? " : "אין לך חשבון? "} */}
         <button style={styles.link} onClick={onSwitch}>
-          {isRegister ? "להתחברות" : "להרשמה"}
+          {/* {isRegister ? "להתחברות" : "להרשמה"} */}
         </button>
       </div>
     </div>
