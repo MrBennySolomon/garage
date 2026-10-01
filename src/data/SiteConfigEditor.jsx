@@ -5,7 +5,7 @@ import "./SiteConfigEditor.css";
 import siteConfig from "./siteConfig";
 
 // סיסמת הכניסה לעריכת תוכן האתר – מומלץ להחליף לפני שימוש בפועל
-const EDITOR_PASSWORD = "12345";
+const EDITOR_PASSWORD = "";
 const SESSION_KEY = "site-config-editor-authed";
 
 const clone = (value) => JSON.parse(JSON.stringify(value));
@@ -45,7 +45,7 @@ export default function SiteConfigEditor() {
   function handleLogin(e) {
     e.preventDefault();
 
-    if (password === EDITOR_PASSWORD) {
+    if (password === EDITOR_PASSWORD && localStorage.getItem("token")) {
       setAuthError("");
       setAuthed(true);
 
@@ -55,7 +55,7 @@ export default function SiteConfigEditor() {
         // sessionStorage לא זמין – ההתחברות עדיין תעבוד לטאב הנוכחי
       }
     } else {
-      setAuthError("סיסמה שגויה. נסו שוב.");
+      setAuthError("התחבר ואז נסה שוב");
     }
   }
 
@@ -178,16 +178,15 @@ export default function SiteConfigEditor() {
             <Lock size={20} />
           </div>
 
-          <h1>כניסה לניהול התוכן</h1>
-          <p>הזינו סיסמה כדי לערוך את תוכן האתר</p>
+          <h3>כניסה לעריכה</h3>
 
-          <input
+          {/* <input
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             placeholder="סיסמה"
             autoFocus
-          />
+          /> */}
 
           {authError && <div className="login-error">{authError}</div>}
 
