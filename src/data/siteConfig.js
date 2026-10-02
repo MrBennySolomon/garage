@@ -140,7 +140,7 @@ const siteConfig = {
   },
   about: {
     heroEyebrow: "אודות",
-    heroTitle: "חזי חיו - מקצועיות עם יחס אישי",
+    heroTitle: "שמעון שירותי רכב - מקצועיות עם יחס אישי",
     sectionEyebrow: "מי אני",
     sectionTitle: "שקיפות, מקצועיות ושירות בגובה העיניים",
     paragraphs: [
