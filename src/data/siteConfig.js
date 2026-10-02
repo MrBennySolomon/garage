@@ -27,6 +27,14 @@ const siteConfig = {
       to: "/contact",
       label: "קבעו תור",
     },
+    {
+      to: "/about",
+      label: "אודות",
+    },
+    {
+      to: "/services",
+      label: "שירותים",
+    },
   ],
   colors: {
     accent: "#f04a32",
