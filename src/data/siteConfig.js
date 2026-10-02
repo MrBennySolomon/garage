@@ -2,8 +2,8 @@ const siteConfig = {
   brand: {
     name: "סטודיו ביוטי",
     tagline: "מספרה · עיצוב · טיפוח",
-    phone: "050-000-0000",
-    phoneHref: "0500000000",
+    phone: "050-111-1111",
+    phoneHref: "0501111111",
     email: "hello@beauty-studio.co.il",
   },
   nav: [
@@ -43,7 +43,7 @@ const siteConfig = {
   },
   hero: {
     eyebrow: "היופי שלך מתחיל כאן",
-    titleLine1: "עיצוב השיער שאת",
+    titleLine1: "שיער שאת",
     titleSpan: "אוהבת.",
     text: "תספורות, צבע, גוונים, החלקות ועיצוב שיער בהתאמה אישית — באווירה נעימה וביחס אישי.",
     ctaPrimaryText: "קבעי תור",
