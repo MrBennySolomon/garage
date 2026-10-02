@@ -1,9 +1,9 @@
 const siteConfig = {
   brand: {
-    name: "סטודיו ביוטי",
+    name: "סטודיו ביוטי בוטיק",
     tagline: "מספרה · עיצוב · טיפוח",
-    phone: "050-111-1111",
-    phoneHref: "0501111111",
+    phone: "050-000-0000",
+    phoneHref: "0500000000",
     email: "hello@beauty-studio.co.il",
   },
   nav: [
