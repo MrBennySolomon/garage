@@ -4,11 +4,39 @@ import "./Login.css";
 import "./SiteConfigEditor.css";
 import siteConfig from "./siteConfig";
 
+
 // סיסמת הכניסה לעריכת תוכן האתר – מומלץ להחליף לפני שימוש בפועל
 const EDITOR_PASSWORD = "";
 const SESSION_KEY = "site-config-editor-authed";
+const SAVE_URL = "https://business-server-five.vercel.app/upload"; // כתובת השרת לשמירת siteConfig.js
 
 const clone = (value) => JSON.parse(JSON.stringify(value));
+
+// ממיר ערך לקוד JavaScript (אובייקט literal) ולא ל-JSON
+const toJsLiteral = (value, indent = 0) => {
+  const pad = "  ".repeat(indent);
+  const padInner = "  ".repeat(indent + 1);
+  if (value === null || value === undefined) return "null";
+  if (typeof value === "string") return JSON.stringify(value);
+  if (typeof value === "number" || typeof value === "boolean")
+    return String(value);
+  if (Array.isArray(value)) {
+    if (value.length === 0) return "[]";
+    return `[\n${value
+      .map((item) => `${padInner}${toJsLiteral(item, indent + 1)},`)
+      .join("\n")}\n${pad}]`;
+  }
+  const keys = Object.keys(value);
+  if (keys.length === 0) return "{}";
+  return `{\n${keys
+    .map((key) => {
+      const safeKey = /^[A-Za-z_$][A-Za-z0-9_$]*$/.test(key)
+        ? key
+        : JSON.stringify(key);
+      return `${padInner}${safeKey}: ${toJsLiteral(value[key], indent + 1)},`;
+    })
+    .join("\n")}\n${pad}}`;
+};
 
 const emptyService = () => ({
   icon: "wrench",
@@ -41,6 +69,7 @@ export default function SiteConfigEditor() {
   const [config, setConfig] = useState(() => clone(siteConfig));
   const [tab, setTab] = useState("brand");
   const [message, setMessage] = useState("");
+  const [saving, setSaving] = useState(false);
 
   function handleLogin(e) {
     e.preventDefault();
@@ -119,7 +148,7 @@ export default function SiteConfigEditor() {
 
   const configText = useMemo(
     () =>
-      `const siteConfig = ${JSON.stringify(config, null, 2)};\n\nexport default siteConfig;\n`,
+      `const siteConfig = ${toJsLiteral(config)};\n\nexport default siteConfig;\n`,
     [config]
   );
 
@@ -139,6 +168,39 @@ export default function SiteConfigEditor() {
     a.click();
     URL.revokeObjectURL(url);
     setMessage("הקובץ siteConfig.js הורד ✓");
+  };
+
+  const saveConfig = async () => {
+    if (saving) return;
+    try {
+      setSaving(true);
+      setMessage("שומר בשרת...");
+
+      const token = localStorage.getItem("token");
+      console.log("siteConfig.js:", siteConfig.js); // בדיקה אם הטוקן קיים
+      const response = await fetch(SAVE_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          filename: "siteConfig.js",
+          content: configText
+        })
+      });
+
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok) {
+        throw new Error(data.error || "שגיאה בשמירה");
+      }
+
+      setMessage("siteConfig.js נשמר בשרת ✓");
+    } catch (error) {
+      console.error(error);
+      setMessage(`שגיאה בשמירה: ${error.message}`);
+    } finally {
+      setSaving(false);
+    }
   };
 
   const handleImageUpload = (index, file) => {
@@ -210,6 +272,13 @@ export default function SiteConfigEditor() {
           <button className="btn secondary" onClick={reset}>
             איפוס
           </button>
+          <button
+            className="btn primary"
+            onClick={saveConfig}
+            disabled={saving}
+          >
+            {saving ? "שומר..." : "💾 שמור בשרת"}
+          </button>
           <button className="btn primary" onClick={downloadConfig}>
             ⬇ הורד siteConfig.js
           </button>
@@ -218,6 +287,8 @@ export default function SiteConfigEditor() {
           </button>
         </div>
       </header>
+
+      {message && tab !== "export" && <div className="success">{message}</div>}
 
       <div className="editor-layout">
         <aside className="sidebar">
@@ -723,6 +794,13 @@ export default function SiteConfigEditor() {
               subtitle="הקובץ שנוצר מתאים למבנה של siteConfig שלך."
             >
               <div className="export-actions">
+                <button
+                  className="btn primary"
+                  onClick={saveConfig}
+                  disabled={saving}
+                >
+                  {saving ? "שומר..." : "💾 שמור בשרת"}
+                </button>
                 <button className="btn primary" onClick={copyConfig}>
                   העתק קוד
                 </button>
