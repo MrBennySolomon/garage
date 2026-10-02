@@ -13,8 +13,8 @@ const siteConfig = {
 
   nav: [
     { to: "/", label: "ראשי" },
-    { to: "/about", label: "אודות" },
-    { to: "/services", label: "שירותים" },
+    // { to: "/about", label: "אודות" },
+    // { to: "/services", label: "שירותים" },
     { to: "/admin", label: "ניהול" },
     { to: "/edit", label: "עריכת האתר" },
     { to: "/login", label: "התחבר" },
