@@ -185,8 +185,7 @@ export default function SiteConfigEditor() {
         },
         body: JSON.stringify({
           filename: "siteConfig.js",
-          content: configText,
-          repo: "garage"
+          content: configText
         })
       });
 
