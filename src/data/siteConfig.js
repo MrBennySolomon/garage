@@ -1,6 +1,6 @@
 const siteConfig = {
   brand: {
-    name: "דידי שירותי רכב",
+    name: "דודו שירותי רכב",
     tagline: "מכונאות חשמל דיאגנוסטיקה",
     phone: "050-111-1234",
     phoneHref: "0501111234",
