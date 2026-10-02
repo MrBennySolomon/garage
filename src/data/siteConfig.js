@@ -92,6 +92,7 @@ const siteConfig = {
     images: [
       "https://images.unsplash.com/photo-1487754180451-c456f719a1fc?auto=format&fit=crop&w=900&q=80",
       "https://images.unsplash.com/photo-1625047509248-ec889cbff17f?auto=format&fit=crop&w=900&q=80",
+      "https://www.image2url.com/r2/default/images/1790972174296-fed920b8-e715-4f38-acfe-3fa7c55efab3.jpg",
     ],
   },
   testimonials: {
