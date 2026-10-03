@@ -8,8 +8,8 @@ import siteConfig from "./siteConfig";
 // סיסמת הכניסה לעריכת תוכן האתר – מומלץ להחליף לפני שימוש בפועל
 const EDITOR_PASSWORD = "";
 const SESSION_KEY = "site-config-editor-authed";
-const SAVE_URL = import.meta.env.VITE_SAVE_URL;
-const GITHUB_REPO_NAME = import.meta.env.VITE_GITHUB_REPO_NAME;
+const SAVE_URL = "https://business-server-five.vercel.app/upload"; // כתובת השרת לשמירת siteConfig.js
+const GITHUB_REPO_NAME = "garage";
 const clone = (value) => JSON.parse(JSON.stringify(value));
 
 // ממיר ערך לקוד JavaScript (אובייקט literal) ולא ל-JSON
