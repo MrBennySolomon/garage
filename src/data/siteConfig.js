@@ -12,6 +12,14 @@ const siteConfig = {
       label: "ראשי",
     },
     {
+      to: "/about",
+      label: "אודות",
+    },
+    {
+      to: "/services",
+      label: "שירותים",
+    },
+    {
       to: "/admin",
       label: "ניהול",
     },
@@ -26,14 +34,6 @@ const siteConfig = {
     {
       to: "/contact",
       label: "קבעו תור",
-    },
-    {
-      to: "/about",
-      label: "אודות",
-    },
-    {
-      to: "/services",
-      label: "שירותים",
     },
   ],
   colors: {
